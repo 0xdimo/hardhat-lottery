@@ -1,6 +1,6 @@
-require("@nomicfoundation/hardhat-toolbox");
-require("dotenv");
+require("@nomicfoundation/hardhat-toolbox")
+require("dotenv")
 
 module.exports = {
-  solidity: "0.8.18",
-};
+    solidity: "0.8.18",
+}
