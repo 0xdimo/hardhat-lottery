@@ -4,11 +4,18 @@ pragma solidity ^0.8.8;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 
 error Raffle__NotEnoughETHEntered();
-error Raffle_TransferFailed();
+error Raffle__TransferFailed();
+error Raffle__NotOpen();
 
-contract Raffle is VRFConsumerBaseV2 {
+contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
+    enum RaffleState {
+        OPEN,
+        CALCULATING
+    }
+
     //State variables
     uint256 private immutable i_entranceFee;
     address payable[] private s_players;
@@ -18,7 +25,9 @@ contract Raffle is VRFConsumerBaseV2 {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint16 private constant NUM_WORDS = 1;
     uint32 private immutable i_callbackGasLimit;
+
     address private s_recentWinner;
+    RaffleState private s_raffleState;
 
     //Events
     event RaffleEnter(address indexed player); //indexed will be searched easier later
@@ -37,15 +46,22 @@ contract Raffle is VRFConsumerBaseV2 {
         i_gasLane = gasLane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = calbackGasLimit;
+        s_raffleState = RaffleState.OPEN;
     }
 
     function enterRaffle() public payable {
         if (msg.value < i_entranceFee) {
             revert Raffle__NotEnoughETHEntered();
         }
+
+        if (s_raffleState != RaffleState.OPEN) {
+            revert Raffle__NotOpen();
+        }
         s_players.push(payable(msg.sender)); //type cast to payable, so we can push sender
         emit RaffleEnter(msg.sender);
     }
+
+    function checkUpkeep(bytes calldata /*checkData*/) external override {}
 
     function requestRandomWinner() external {
         uint256 requestId = i_vrfCoordinator.requestRandomWords(
@@ -69,7 +85,7 @@ contract Raffle is VRFConsumerBaseV2 {
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
 
         if (!success) {
-            revert Raffle_TransferFailed();
+            revert Raffle__TransferFailed();
         }
 
         emit WinnerPicked(recentWinner); //so we could have a searchable list of event winners
