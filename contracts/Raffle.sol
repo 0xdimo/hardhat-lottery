@@ -2,6 +2,9 @@
 
 pragma solidity ^0.8.8;
 
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+// import "@chainlink/contracts/src/v0.8/VRFV2WrapperConsumerBase.sol";
+
 error Raffle__NotEnoughETHEntered();
 
 contract Raffle {
@@ -24,7 +27,9 @@ contract Raffle {
         emit RaffleEnter(msg.sender);
     }
 
-    // function pickRandomWinner() {}
+    function requestRandomWinner() external {}
+
+    function fulfillRandomWords() external override {}
 
     function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
