@@ -136,4 +136,13 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     function getNumWords() public pure returns (uint256) {
         return NUM_WORDS;
     }
+
+    function getLatestTimestamp() public view returns (uint256) {
+        return s_lastTimestamp;
+    }
+
+    function getRequestConfirmations() public pure returns (uint256) {
+        return REQUEST_CONFIRMATIONS;
+    }
+
 }
