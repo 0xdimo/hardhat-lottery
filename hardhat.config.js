@@ -1,5 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox")
-require("dotenv")
+require("dotenv").config()
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL
 const PRIVATE_KEY = process.env.PRIVATE_KEY
@@ -15,8 +15,8 @@ module.exports = {
             blockConfirmations: 1,
         },
         sepolia: {
-            url: "https://eth-sepolia.g.alchemy.com/v2/YOUR-API-KEY",
-            accounts: "0xPrivateKey",
+            url: SEPOLIA_RPC_URL,
+            accounts: [PRIVATE_KEY],
             saveDeployments: true,
             chainId: 11155111,
         },
