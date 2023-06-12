@@ -8,6 +8,10 @@ const networkConfig = {
         callbackGasLimit: "500000", // 500,000 gas
         vrfCoordinatorV2: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625",
     },
+    31337: {
+        name: "hardhat",
+        raffleEntranceFee: ethers.utils.parseEther("0.01"), // 0.01 ETH
+    },
 }
 
 const developmentChains = ["hardhat", "localhost"]
