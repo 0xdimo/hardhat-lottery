@@ -39,5 +39,10 @@ module.exports = {
     },
     mocha: {
         timeout: 200000, // 200 sec max
-    }
+    },
+    etherscan: {
+        apiKey: {
+            sepolia: ETHERSCAN_API_KEY,
+        },
+    },
 }
